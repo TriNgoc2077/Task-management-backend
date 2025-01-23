@@ -65,3 +65,45 @@ module.exports.changeStatus = async (req, res) => {
         });
     }
 }
+
+// [PATCH] api/v1/tasks/change-multi/
+module.exports.changeMulti = async (req, res) => {
+    try {
+        const { ids, key, value } = req.body;
+        if (key == 'status') {
+            await Task.updateMany(
+                { _id: { $in: ids }},
+                { status: value } 
+            );
+        }
+        
+        res.json({ 
+            code: 200,
+            message: "Update status successfully !"
+        });
+    } catch(error) {
+        res.json({
+            code: 400, 
+            message: "Not exist !"
+        });
+    }
+}
+
+// [POST] api/v1/tasks/create
+module.exports.create = async (req, res) => {
+    try {
+        const task = new Task(req.body);
+        const data = await task.save();
+
+        res.json({ 
+            code: 200,
+            message: "Create successfully !",
+            data: data
+        });
+    } catch(error) {
+        res.json({
+            code: 400, 
+            message: "Create failed !"
+        });
+    }
+}
