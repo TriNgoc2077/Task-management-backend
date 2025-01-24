@@ -4,7 +4,7 @@ module.exports.requireAuth = async (req, res, next) => {
         if (req.headers.authorization) {
             const userToken = req.headers.authorization.split(' ')[1];
             //req.header have header include: bearer GmHuJv86Aqis6mJklTRP
-            const user = await User.findOne({ userToken: userToken, deleted: false }).select("-password -userToken");
+            const user = await User.findOne({ userToken: userToken, deleted: false }).select("-password");
             if (!user) {
                 throw new Error('invalid token !');
             }

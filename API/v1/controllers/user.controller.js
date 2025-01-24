@@ -166,3 +166,20 @@ module.exports.profile = async (req, res) => {
         });
     }
 }
+
+// [GET] /listUser
+module.exports.listUser = async (req, res) => {
+    try {   
+        const users = await User.find({ deleted: false }).select("fullName email");
+
+        res.json({
+            code: 200,
+            users: users
+        });
+    } catch(error) {
+        res.json({
+            code: 400,
+            message: error.message
+        });
+    }
+}
