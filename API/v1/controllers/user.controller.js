@@ -1,4 +1,4 @@
-const { generateRandomNumber } = require('../../../helpers/generate');
+const generateHelper = require('../../../helpers/generate');
 const User = require("../models/user.model");
 const ForgotPassword = require('../models/forgot-password.model');
 const { sendMail } = require('../../../helpers/sendMail');
@@ -14,7 +14,8 @@ module.exports.register = async (req, res) => {
         const user = new User({
             fullName: req.body.email,
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
+            userToken: generateHelper.generateRandomString(20),
         })
         await user.save();
         const token = user.userToken;
@@ -43,7 +44,7 @@ module.exports.login = async (req, res) => {
                 throw new Error('Password is incorrect !');
             }
         } else {
-            throw new Error('Email already exist !');
+            throw new Error('Email does not exist !');
         }
         const token = existUser.userToken;
         res.cookie('token', token);
@@ -154,17 +155,9 @@ module.exports.resetPassword = async (req, res) => {
 // [GET] /profile
 module.exports.profile = async (req, res) => {
     try {
-        const token = req.cookies.token;
-        const user = await User.findOne(
-            { 
-                userToken: token,
-                deleted: false
-            }
-        ).select('-password -userToken');
-
         res.json({
             code: 200,
-            infor: user    
+            infor: req.user    
         });
     } catch(error) {
         res.json({
