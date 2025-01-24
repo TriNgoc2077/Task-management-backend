@@ -150,3 +150,26 @@ module.exports.resetPassword = async (req, res) => {
         });
     }
 }
+
+// [GET] /profile
+module.exports.profile = async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        const user = await User.findOne(
+            { 
+                userToken: token,
+                deleted: false
+            }
+        ).select('-password -userToken');
+
+        res.json({
+            code: 200,
+            infor: user    
+        });
+    } catch(error) {
+        res.json({
+            code: 400,
+            message: error.message
+        });
+    }
+}
