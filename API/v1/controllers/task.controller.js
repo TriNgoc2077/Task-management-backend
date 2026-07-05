@@ -20,7 +20,7 @@ module.exports.index = async (req, res) => {
     //find
     const objectSearch = searchHelpers(req.query);
 
-    if (objectSearch.regex) {
+    if (req.query.keyword) {
         objectFind.title = objectSearch.regex;
     }
     //pagination
